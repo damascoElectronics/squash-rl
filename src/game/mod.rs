@@ -61,7 +61,42 @@ impl GameState {
 			},
 			score: 0,
 			active: false,	
-		}
+	}
 	
+	pub fn update(&mut self){
+		
+		if self.active == true{
+			
+                        let new_x:i32 = self.ball_pos.x as i32 + self.ball_speed.speed_x;
+                        let new_y:i32 = self.ball_pos.y as i32 + self.ball_speed.speed_y;
+			
+			if new_x == 0 
+			{
+				self.ball_speed.speed_x = -self.ball_speed.speed_x.abs();
+			}
+			if new_x == FIELD_WIDTH
+			{
+				self.ball_speed.speed_x = -self.ball_speed.speed_x; 
+			}
 
+			if new_y == 0
+			{
+                                self.ball_speed.speed_y = -self.ball_speed.speed_y;
+                        }
+			if (new_x >= (self.racket.racket_position.x as i32 - (RACKET_LENGTH as i32 /2))) && 
+			   (new_x <= (self.racket.racket_position.x as i32 + (RACKET_LENGTH as i32 /2))) && 
+			   (new_y == (FIELD_HEIGHT as i32 - SPACE as i32 - RACKET_HEIGHT as i32 - 1))
+			{
+				self.ball_speed.speed_y = -self.ball_speed.speed_y;
+				self.score += 1;
+			}
+			if new_y >= FIELD_HEIGHT as i32
+			{
+				self.active = false;
+				return;
+			}
+			self.ball_pos.x = new_x as u32;
+			self.ball_pos.y = new_y as u32;
+		}
+	}
 }
