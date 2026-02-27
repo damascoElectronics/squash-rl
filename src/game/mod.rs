@@ -54,6 +54,7 @@ pub enum Action
 }
 
 /* methods and implementations */
+use Action::*;
 
 impl GameState 
 {	
@@ -105,7 +106,7 @@ impl GameState
 				self.ball_speed.speed_x = -self.ball_speed.speed_x.abs(); 
 			}
                         // verification if the ball is RIGTH side of the screen, if is there, changes direction
-			if new_x == FIELD_WIDTH
+			if new_x == FIELD_WIDTH as i32
 			{
 				self.ball_speed.speed_x = -self.ball_speed.speed_x; 
 			}
