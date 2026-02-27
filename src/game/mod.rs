@@ -50,15 +50,18 @@ impl GameState {
 	// fn new: intialitate the game with the inital game data
 	pub fn new() -> Self {
         	GameState{
+			// initial state of the ball's position
 			ball_pos: Position {
 				x: FIELD_WIDTH/2,
 				y: FIELD_HEIGHT - SPACE - RACKET_HEIGHT - 1,
 			},
+			// initial state of the ball's speed
 			ball_speed: Speed{
 				speed_x: 1,
 				speed_y: 1,
 				angle: 0.785398,
 			},
+			// initial state of the racket 
 			racket: Racket {
 				length: RACKET_LENGTH,
 				height: RACKET_HEIGHT,
@@ -69,31 +72,33 @@ impl GameState {
 					y: FIELD_HEIGHT - SPACE - RACKET_HEIGHT,
 				},
 			},
-			score: 0,
-			active: false,	
+			score: 0, 	// score initialitation 
+			active: false,	// game start in stop, to move active changes to true
 	}
 	
 	// fn update: create the muvementes for the ball
 	pub fn update(&mut self){
 		
 		if self.active == true{
-			
+			// calculation of the new postiton of the ball
                         let new_x:i32 = self.ball_pos.x as i32 + self.ball_speed.speed_x;
                         let new_y:i32 = self.ball_pos.y as i32 + self.ball_speed.speed_y;
-			
+			// verification if the ball is LEFT side of the screen, if is there, changes direction
 			if new_x == 0 
 			{
-				self.ball_speed.speed_x = -self.ball_speed.speed_x.abs();
+				self.ball_speed.speed_x = -self.ball_speed.speed_x.abs(); 
 			}
+                        // verification if the ball is RIGTH side of the screen, if is there, changes direction
 			if new_x == FIELD_WIDTH
 			{
 				self.ball_speed.speed_x = -self.ball_speed.speed_x; 
 			}
-
+			// verification if the ball is TOP side of the screen, if is there, changes direction
 			if new_y == 0
 			{
                                 self.ball_speed.speed_y = -self.ball_speed.speed_y;
                         }
+                        // verification if the ball has TOUCH THE RACKET , if is touching, changes direction
 			if (new_x >= (self.racket.racket_position.x as i32 - (RACKET_LENGTH as i32 /2))) && 
 			   (new_x <= (self.racket.racket_position.x as i32 + (RACKET_LENGTH as i32 /2))) && 
 			   (new_y == (FIELD_HEIGHT as i32 - SPACE as i32 - RACKET_HEIGHT as i32 - 1))
@@ -101,11 +106,13 @@ impl GameState {
 				self.ball_speed.speed_y = -self.ball_speed.speed_y;
 				self.score += 1;
 			}
+                        // verification if the ball is BOTTOM side of the screen, if is there, END GAME
 			if new_y >= FIELD_HEIGHT as i32
 			{
 				self.active = false;
 				return;
 			}
+			// updating the position of the ball
 			self.ball_pos.x = new_x as u32;
 			self.ball_pos.y = new_y as u32;
 		}
