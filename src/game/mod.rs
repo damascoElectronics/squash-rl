@@ -9,7 +9,7 @@ const RACKET_LENGTH: u32 = 20;	// dimetnions of the racket
 const RACKET_HEIGHT: u32 = 4;	// dimentions of the racket
 const SPACE: u32 = 5;		// sapce between racket and botton of the game area
 
-/***** Structures area *****/
+/***** Structures and enums area *****/
 
 /* speed information */
 pub struct Speed{
@@ -41,6 +41,32 @@ pub struct GameState
 	racket: Racket,
 	score: i32, 
  	active: bool,
+}
+
+pub enum Action {
+	Left,pub fn move_racket(&mut self, dir:Action){
+
+                match dir{
+                        Left => {
+                                let new_x_left = self.racket.racket_position.x as i32 - (RACKET_LENGTH as i32 /2) - self.racket.racket_speed;
+                                if new_x_left <= 0 {
+                                        self.racket.racket_position.x = self.racket.racket_position.x - self.racket.racket_speed;
+                                }
+                        },
+                        Right => {
+                                let new_x_right = self.racket.racket_position.x as i32 + (RACKET_LENGTH as i32 /2)) + self.racket.racket_speed;
+                                if new_x_right >= FIELD_WIDTH{
+                                        self.racket.racket_position.x = self.racket.racket_position.x + self.racket.racket_speed;
+                                }
+                        },
+                        Stay => {
+                                return;
+                        },
+                        _=> return;,
+                }
+        }
+	Right,
+	Stay,
 }
 
 /* methods and implementations */
@@ -117,4 +143,27 @@ impl GameState {
 			self.ball_pos.y = new_y as u32;
 		}
 	}
+	// fn move_racket: to update the raquet state:
+	pub fn move_racket(&mut self, dir:Action){
+		
+		match dir{
+			Left => {
+				let new_x_left:i32 = self.racket.racket_position.x as i32 - (RACKET_LENGTH as i32 /2) - self.racket.racket_speed;
+				if new_x_left > 0 {
+					self.racket.racket_position.x = self.racket.racket_position.x - self.racket.racket_speed as u32;	
+				}
+			},
+    			Right => {
+				let new_x_right:i32 = self.racket.racket_position.x as i32 + (RACKET_LENGTH as i32 /2) + self.racket.racket_speed;
+				if new_x_right < FIELD_WIDTH as i32{
+					self.racket.racket_position.x = self.racket.racket_position.x + self.racket.racket_speed as u32;
+				}
+			},
+			Stay => {
+				return;		
+			},
+		}
+	}
+
 }
+
