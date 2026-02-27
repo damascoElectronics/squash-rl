@@ -1,0 +1,17 @@
+# Rust build artifacts
+/target/
+**/target/
+*.lock
+
+# Cargo lock files for libraries (keep for binaries)
+# Cargo.lock is committed for binary projects
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
