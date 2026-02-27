@@ -1,22 +1,30 @@
-// state of the game
+// mod.rs: traks the state of the game
 
-const FIELD_WIDTH: u32 = 800;
-const FIELD_HEIGHT: u32 = 600;
-const RACKET_LENGTH: u32 = 20;
-const RACKET_HEIGHT: u32 = 4;
-const SPACE: u32 = 5;
 
+/***** cosntants *****/
+
+const FIELD_WIDTH: u32 = 800; 	// area of the game
+const FIELD_HEIGHT: u32 = 600;	// area of the game
+const RACKET_LENGTH: u32 = 20;	// dimetnions of the racket
+const RACKET_HEIGHT: u32 = 4;	// dimentions of the racket
+const SPACE: u32 = 5;		// sapce between racket and botton of the game area
+
+/***** Structures area *****/
+
+/* speed information */
 pub struct Speed{
 	speed_x: i32,
 	speed_y: i32,
 	angle: f32,
 }
 
+/* position of the ball in the game */ 
 pub struct Position{
 	x:u32,
 	y:u32,
 }
 
+/* Racket Infromation */
 pub struct Racket{
 	length:u32,
 	height:u32,
@@ -25,7 +33,7 @@ pub struct Racket{
 	racket_position: Position,
 }
 
-
+/* general infromation of the game */
 pub struct GameState
 {
 	ball_pos:Position,
@@ -35,9 +43,11 @@ pub struct GameState
  	active: bool,
 }
 
-
+/* methods and implementations */
 
 impl GameState {
+	
+	// fn new: intialitate the game with the inital game data
 	pub fn new() -> Self {
         	GameState{
 			ball_pos: Position {
@@ -63,6 +73,7 @@ impl GameState {
 			active: false,	
 	}
 	
+	// fn update: create the muvementes for the ball
 	pub fn update(&mut self){
 		
 		if self.active == true{
