@@ -44,27 +44,7 @@ pub struct GameState
 }
 
 pub enum Action {
-	Left,pub fn move_racket(&mut self, dir:Action){
-
-                match dir{
-                        Left => {
-                                let new_x_left = self.racket.racket_position.x as i32 - (RACKET_LENGTH as i32 /2) - self.racket.racket_speed;
-                                if new_x_left <= 0 {
-                                        self.racket.racket_position.x = self.racket.racket_position.x - self.racket.racket_speed;
-                                }
-                        },
-                        Right => {
-                                let new_x_right = self.racket.racket_position.x as i32 + (RACKET_LENGTH as i32 /2)) + self.racket.racket_speed;
-                                if new_x_right >= FIELD_WIDTH{
-                                        self.racket.racket_position.x = self.racket.racket_position.x + self.racket.racket_speed;
-                                }
-                        },
-                        Stay => {
-                                return;
-                        },
-                        _=> return;,
-                }
-        }
+	Left,
 	Right,
 	Stay,
 }
