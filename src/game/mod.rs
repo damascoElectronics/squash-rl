@@ -12,20 +12,23 @@ const SPACE: u32 = 5;		// sapce between racket and botton of the game area
 /***** Structures and enums area *****/
 
 /* speed information */
-pub struct Speed{
+pub struct Speed
+{
 	speed_x: i32,
 	speed_y: i32,
 	angle: f32,
 }
 
 /* position of the ball in the game */ 
-pub struct Position{
+pub struct Position
+{
 	x:u32,
 	y:u32,
 }
 
 /* Racket Infromation */
-pub struct Racket{
+pub struct Racket
+{
 	length:u32,
 	height:u32,
 	curve:u32,
@@ -43,7 +46,8 @@ pub struct GameState
  	active: bool,
 }
 
-pub enum Action {
+pub enum Action 
+{
 	Left,
 	Right,
 	Stay,
@@ -51,44 +55,50 @@ pub enum Action {
 
 /* methods and implementations */
 
-impl GameState {
-	
+impl GameState 
+{	
 	// fn new: intialitate the game with the inital game data
-	pub fn new() -> Self {
-        	GameState{
+	pub fn new() -> Self 
+		{
+        	GameState
+			{
 			// initial state of the ball's position
 			ball_pos: Position {
 				x: FIELD_WIDTH/2,
 				y: FIELD_HEIGHT - SPACE - RACKET_HEIGHT - 1,
 			},
 			// initial state of the ball's speed
-			ball_speed: Speed{
+			ball_speed: Speed
+			{
 				speed_x: 1,
 				speed_y: 1,
 				angle: 0.785398,
 			},
 			// initial state of the racket 
-			racket: Racket {
+			racket: Racket 
+			{
 				length: RACKET_LENGTH,
 				height: RACKET_HEIGHT,
 				curve: 0,
 				racket_speed:1,
-				racket_position: Position{
+				racket_position: Position
+				{
 					x: FIELD_WIDTH/2,
 					y: FIELD_HEIGHT - SPACE - RACKET_HEIGHT,
 				},
 			},
 			score: 0, 	// score initialitation 
 			active: false,	// game start in stop, to move active changes to true
+		}
 	}
-	
 	// fn update: create the muvementes for the ball
-	pub fn update(&mut self){
-		
-		if self.active == true{
+	pub fn update(&mut self)
+	{
+		if self.active == true
+		{
 			// calculation of the new postiton of the ball
-                        let new_x:i32 = self.ball_pos.x as i32 + self.ball_speed.speed_x;
-                        let new_y:i32 = self.ball_pos.y as i32 + self.ball_speed.speed_y;
+            let new_x:i32 = self.ball_pos.x as i32 + self.ball_speed.speed_x;
+            let new_y:i32 = self.ball_pos.y as i32 + self.ball_speed.speed_y;
 			// verification if the ball is LEFT side of the screen, if is there, changes direction
 			if new_x == 0 
 			{
@@ -102,9 +112,9 @@ impl GameState {
 			// verification if the ball is TOP side of the screen, if is there, changes direction
 			if new_y == 0
 			{
-                                self.ball_speed.speed_y = -self.ball_speed.speed_y;
-                        }
-                        // verification if the ball has TOUCH THE RACKET , if is touching, changes direction
+				self.ball_speed.speed_y = -self.ball_speed.speed_y;
+            }
+            // verification if the ball has TOUCH THE RACKET , if is touching, changes direction
 			if (new_x >= (self.racket.racket_position.x as i32 - (RACKET_LENGTH as i32 /2))) && 
 			   (new_x <= (self.racket.racket_position.x as i32 + (RACKET_LENGTH as i32 /2))) && 
 			   (new_y == (FIELD_HEIGHT as i32 - SPACE as i32 - RACKET_HEIGHT as i32 - 1))
@@ -124,26 +134,31 @@ impl GameState {
 		}
 	}
 	// fn move_racket: to update the raquet state:
-	pub fn move_racket(&mut self, dir:Action){
-		
-		match dir{
-			Left => {
+	pub fn move_racket(&mut self, dir:Action)
+{
+		match dir
+		{
+			Left => 
+			{
 				let new_x_left:i32 = self.racket.racket_position.x as i32 - (RACKET_LENGTH as i32 /2) - self.racket.racket_speed;
-				if new_x_left > 0 {
+				if new_x_left > 0 
+				{
 					self.racket.racket_position.x = self.racket.racket_position.x - self.racket.racket_speed as u32;	
 				}
 			},
-    			Right => {
+    		Right => 
+				{
 				let new_x_right:i32 = self.racket.racket_position.x as i32 + (RACKET_LENGTH as i32 /2) + self.racket.racket_speed;
-				if new_x_right < FIELD_WIDTH as i32{
+				if new_x_right < FIELD_WIDTH as i32
+				{
 					self.racket.racket_position.x = self.racket.racket_position.x + self.racket.racket_speed as u32;
 				}
 			},
-			Stay => {
+			Stay => 
+			{
 				return;		
 			},
 		}
 	}
-
 }
 
