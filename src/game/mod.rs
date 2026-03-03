@@ -22,8 +22,8 @@ pub struct Speed
 /* position of the ball in the game */ 
 pub struct Position
 {
-	x:u32,
-	y:u32,
+	pub x:u32,
+	pub y:u32,
 }
 
 /* Racket Infromation */
@@ -33,17 +33,17 @@ pub struct Racket
 	height:u32,
 	curve:u32,
 	racket_speed: i32,
-	racket_position: Position,
+	pub racket_position: Position,
 }
 
 /* general infromation of the game */
 pub struct GameState
 {
-	ball_pos:Position,
-	ball_speed: Speed,
-	racket: Racket,
-	score: i32, 
- 	active: bool,
+	pub ball_pos:Position,
+	pub ball_speed: Speed,
+	pub racket: Racket,
+	pub score: i32, 
+ 	pub active: bool,
 }
 
 pub enum Action 
@@ -99,11 +99,11 @@ impl GameState
 		{
 			// calculation of the new postiton of the ball
             let new_x:i32 = self.ball_pos.x as i32 + self.ball_speed.speed_x;
-            let new_y:i32 = self.ball_pos.y as i32 + self.ball_speed.speed_y;
+            let new_y:i32 = self.ball_pos.y as i32 - self.ball_speed.speed_y;
 			// verification if the ball is LEFT side of the screen, if is there, changes direction
 			if new_x == 0 
 			{
-				self.ball_speed.speed_x = -self.ball_speed.speed_x.abs(); 
+				self.ball_speed.speed_x = -self.ball_speed.speed_x; 
 			}
                         // verification if the ball is RIGTH side of the screen, if is there, changes direction
 			if new_x == FIELD_WIDTH as i32
