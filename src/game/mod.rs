@@ -1,5 +1,6 @@
 // mod.rs: traks the state of the game
 
+pub mod input;
 
 /***** cosntants *****/
 
@@ -50,7 +51,6 @@ pub enum Action
 {
 	Left,
 	Right,
-	Stay,
 }
 
 /* methods and implementations */

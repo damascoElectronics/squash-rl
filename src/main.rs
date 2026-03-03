@@ -4,7 +4,6 @@ use std::time::Duration;
 use crossterm::event::{read, Event, KeyEventKind, KeyCode, poll};
 mod game;
  
- 
 fn main() {
  
     let mut state = game::GameState::new();
@@ -15,31 +14,21 @@ fn main() {
     {            
         while poll(Duration::from_millis(0)).unwrap()
         {
-            match read().unwrap() 
+            match game::input::read_input()
             {
-                Event::Key(event) => 
+                game::input::Action::Stop => 
                 {
-                if event.kind == KeyEventKind::Press {
-                    
-                    match event.code 
-                    {
-                        KeyCode::Backspace => 
-                        {
-                            break 'a;
-                        }
-                        KeyCode::Left =>
-                        {
-                            state.move_racket(game::Action::Left);                            
-                        }
-                        KeyCode::Right =>
-                        {
-                            state.move_racket(game::Action::Right);
-                        }
-                        _ => continue,
-                    }
+                    break 'a;
                 }
-            }
-            _ => continue,
+                game::input::Action::Left =>
+                {
+                    state.move_racket(game::Action::Left);                            
+                }
+                game::input::Action::Right =>
+                {
+                    state.move_racket(game::Action::Right);
+                }
+                _ => continue,
             }
         }
         state.update();
