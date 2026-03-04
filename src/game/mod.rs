@@ -1,11 +1,12 @@
 // mod.rs: traks the state of the game
 
 pub mod input;
+pub mod render;
 
 /***** cosntants *****/
 
-const FIELD_WIDTH: u32 = 800; 	// area of the game
-const FIELD_HEIGHT: u32 = 600;	// area of the game
+pub const FIELD_WIDTH: u32 = 800; 	// area of the game
+pub const FIELD_HEIGHT: u32 = 600;	// area of the game
 const RACKET_LENGTH: u32 = 20;	// dimetnions of the racket
 const RACKET_HEIGHT: u32 = 4;	// dimentions of the racket
 const SPACE: u32 = 5;		// sapce between racket and botton of the game area
