@@ -6,7 +6,7 @@ pub struct WindowState
     buffer: Vec<u32>,
     width: usize,
     height: usize,
-    window: Window,
+    pub window: Window,
 }
 
 impl WindowState
@@ -16,12 +16,16 @@ impl WindowState
         let width:usize = super::FIELD_WIDTH as usize;
         let height:usize = super::FIELD_HEIGHT as usize;
         let buffer: Vec<u32> = vec![0;  width * height]; 
-        let mut window= match Window::new
+        let mut window = match Window::new
         (
             "Game", 
             width, 
             height, 
-            WindowOptions::default()
+            WindowOptions
+            {
+                resize: false,
+                ..WindowOptions::default()
+            }
         ) 
         {
             Ok(win) => win,
@@ -49,6 +53,7 @@ impl WindowState
         let racket_length:usize = (state.racket.length/2) as usize;
 
         self.buffer.fill(0);
+        self.window.set_title(&format!("Squash RL - Score: {}", state.score));
         self.buffer[ball_pos_y * self.width + ball_pos_x] = 0x00FFFFFF;
 
          for i in  (racket_position_x - racket_length)..(racket_position_x + racket_length) {

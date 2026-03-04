@@ -1,5 +1,5 @@
 // input.rs track keyobard 
-use crossterm::event::{read, Event, KeyEventKind, KeyCode, poll};
+use minifb::{Window, Key};
 
 pub enum Action 
 {   
@@ -11,42 +11,20 @@ pub enum Action
 }
 
 
-pub fn read_input() -> Action
+pub fn read_input(window:&Window) -> Action
 {
-    match read().unwrap() 
-        {
-            Event::Key(event) => 
-            {
-            if event.kind == KeyEventKind::Press {
-                
-                match event.code 
-                {
-                    KeyCode::Backspace => 
-                    {
-                        Action::Stop
-                    },
-                    
-                    KeyCode::Enter => 
-                    {
-                        Action::Start
-                    },
-                    KeyCode::Left =>
-                    {
-                        Action::Left                            
-                    },
-                    KeyCode::Right =>
-                    {
-                        Action::Right
-                    },
-                    _ => Action::Stay,
-                }
-            }
-            else
-            {
-                 Action::Stay
-            }
-        },
-        _ => Action::Stay,
+    if window.is_key_down(Key::Left) 
+    {
+        Action::Left
+    } else if window.is_key_down(Key::Right) 
+    {
+        Action::Right
+    } else if window.is_key_down(Key::Escape) 
+    {
+        Action::Stop
+    } else 
+    {
+        Action::Stay
     }
     
 }
