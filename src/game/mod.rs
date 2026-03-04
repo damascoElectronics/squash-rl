@@ -47,7 +47,7 @@ pub struct GameState
 	pub score: i32, 
  	pub active: bool,
 }
-
+// posible options can be performed
 pub enum Action 
 {
 	Left,
@@ -155,10 +155,6 @@ impl GameState
 				{
 					self.racket.racket_position.x = self.racket.racket_position.x + self.racket.racket_speed as u32;
 				}
-			},
-			Stay => 
-			{
-				return;		
 			},
 		}
 	}
