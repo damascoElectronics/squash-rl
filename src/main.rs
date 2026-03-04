@@ -1,6 +1,3 @@
-
-use std::io::{stdout, Write};
-use std::time::Duration;
 mod game;
  
 fn main() {
