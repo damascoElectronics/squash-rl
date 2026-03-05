@@ -16,7 +16,7 @@ const SPACE: u32 = 5;		// sapce between racket and botton of the game area
 /* speed information */
 pub struct Speed
 {
-	speed_x: i32,
+	pub speed_x: i32,
 	pub speed_y: i32,
 	angle: f32,
 }
@@ -52,6 +52,7 @@ pub enum Action
 {
 	Left,
 	Right,
+	Stay,
 }
 
 /* methods and implementations */
@@ -156,6 +157,7 @@ impl GameState
 					self.racket.racket_position.x = self.racket.racket_position.x + self.racket.racket_speed as u32;
 				}
 			},
+			Stay => {}
 		}
 	}
 }
