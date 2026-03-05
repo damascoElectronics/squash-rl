@@ -80,9 +80,26 @@ impl Agent
     }
     
 
-    fn learn(&mut self, state: &GameState, action: Action)
+fn learn(&mut self, state_before: &GameState, action: &Action, reward: f32, state_after: &GameState)
     {
         
+        let key_before = self.discretize(&state_before);
+        let key_after = self.discretize(&state_after);
+        let q_values_after = self.q_table.get(&key_after).copied().unwrap_or([0.0, 0.0, 0.0]);
+        let q_values_before = self.q_table.entry(key_before).or_insert([0.0, 0.0, 0.0]);
+
+        let action_index = match action {
+            Action::Left => 0,
+            Action::Right => 1,
+            Action::Stay => 2,
+        };
+
+        let current_q = q_values_before[action_index];
+        let max_future_q = q_values_after.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
+        let new_q = current_q + self.alpha * (reward + self.gamma * max_future_q - current_q);
+        q_values_before[action_index] = new_q;
+        
+
     }
 
 }
