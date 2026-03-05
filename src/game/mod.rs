@@ -17,7 +17,7 @@ const SPACE: u32 = 5;		// sapce between racket and botton of the game area
 pub struct Speed
 {
 	speed_x: i32,
-	speed_y: i32,
+	pub speed_y: i32,
 	angle: f32,
 }
 
@@ -137,7 +137,7 @@ impl GameState
 	}
 	// fn move_racket: to update the raquet state:
 	pub fn move_racket(&mut self, dir:Action)
-{
+	{
 		match dir
 		{
 			Left => 
