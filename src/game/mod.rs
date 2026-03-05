@@ -14,6 +14,7 @@ const SPACE: u32 = 5;		// sapce between racket and botton of the game area
 /***** Structures and enums area *****/
 
 /* speed information */
+#[derive(Clone)]
 pub struct Speed
 {
 	pub speed_x: i32,
@@ -22,6 +23,7 @@ pub struct Speed
 }
 
 /* position of the ball in the game */ 
+#[derive(Clone)]
 pub struct Position
 {
 	pub x:u32,
@@ -29,6 +31,7 @@ pub struct Position
 }
 
 /* Racket Infromation */
+#[derive(Clone)]
 pub struct Racket
 {
 	length:u32,
@@ -39,6 +42,7 @@ pub struct Racket
 }
 
 /* general infromation of the game */
+#[derive(Clone)]
 pub struct GameState
 {
 	pub ball_pos:Position,
@@ -136,6 +140,7 @@ impl GameState
 			self.ball_pos.y = new_y as u32;
 		}
 	}
+
 	// fn move_racket: to update the raquet state:
 	pub fn move_racket(&mut self, dir:Action)
 	{

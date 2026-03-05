@@ -1,36 +1,106 @@
+use std::env::args;
 mod game;
 mod agent;
- 
+
 fn main() {
  
-    let mut state = game::GameState::new();
-    let mut window = game::render::WindowState::new();
-    state.active = true;
-    
-    while window.window.is_open()
-    {
-        match game::input::read_input(&window.window)
-        {
-            game::input::Action::Stop => 
+
+    let args: Vec<String> = std::env::args().collect();
+    let mode: &str = if args.len() > 1 { &args[1] } else { "error" };
+
+
+    match mode {
+        "manual" => 
+        { 
+            let mut state = game::GameState::new();
+            let mut window = game::render::WindowState::new();
+            state.active = true;
+
+            while window.window.is_open()
             {
-                break;
+                match game::input::read_input(&window.window)
+                {
+                    game::input::Action::Stop => 
+                    {
+                        break;
+                    }
+                    game::input::Action::Left =>
+                    {
+                        state.move_racket(game::Action::Left);                            
+                    }
+                    game::input::Action::Right =>
+                    {
+                        state.move_racket(game::Action::Right);
+                    }
+                    _ => {},
+                }
+
+                state.update();
+                window.draw(&state);
+                if !state.active
+                {
+                    break;
+                }
             }
-            game::input::Action::Left =>
-            {
-                state.move_racket(game::Action::Left);                            
-            }
-            game::input::Action::Right =>
-            {
-                state.move_racket(game::Action::Right);
-            }
-            _ => {},
         }
-    
-        state.update();
-        window.draw(&state);
-        if !state.active
+        "agent" => 
         {
-            break;
+            let mut current_state = game::GameState::new();
+            let mut previous_state = game::GameState::new();
+            let mut agent = agent::Agent::new();
+            let mut window = game::render::WindowState::new();
+            let mut reward:i32 = 0; 
+            let mut action: game::Action = game::Action::Stay;
+            current_state.active = true;
+
+            while window.window.is_open()
+            {
+                match game::input::read_input(&window.window)
+                {
+                    game::input::Action::Stop => 
+                    {
+                        break;
+                    }
+                    _ => {
+                        action = agent.decide(&current_state);
+                        match action
+                        {
+                            game::Action::Left =>
+                            {
+                                current_state.move_racket(game::Action::Left);                            
+                            }
+                            game::Action::Right =>
+                            {
+                                current_state.move_racket(game::Action::Right);
+                            }
+                            _ => {},
+                        }
+                    },
+                }
+
+                current_state.update(); 
+                if !current_state.active
+                {
+                    current_state = game::GameState::new();
+                    current_state.active = true;
+                    reward = -1;
+                }
+                else if (previous_state.ball_speed.speed_y > 0) && (current_state.ball_speed.speed_y < 0)
+                {
+                    reward = 1;
+                }
+                else 
+                {
+                    reward = 0;
+                }
+                agent.learn(&previous_state, &action, reward as f32, &current_state);
+                previous_state = current_state.clone();
+                window.draw(&current_state);            
+            } 
+        }
+        _ => 
+        { 
+            println!("no command");
         }
     }
 

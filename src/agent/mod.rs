@@ -8,7 +8,7 @@ const NUM_ZONES: u32 = 10;		// Num zones
 const ZONE_RELATION_H: i32 = (FIELD_HEIGHT / NUM_ZONES) as i32 ;
 const ZONE_RELATION_W: i32 = (FIELD_WIDTH / NUM_ZONES) as i32 ;
 
-struct Agent 
+pub struct Agent 
 {
     // Q-table (zone_x_ball, zone_y_ball, dir_x, dir_y, zone_x_racket)
     q_table: HashMap<(i32,i32,i32,i32,i32), [f32; 3]>,  
@@ -42,7 +42,7 @@ impl Agent
         (zone_x_ball, zone_y_ball, dir_x, dir_y, zone_x_racket)
     }
 
-    fn decide(&self, state: &GameState) -> Action
+    pub fn decide(&self, state: &GameState) -> Action
     {
         let mut rng = rand::rng();
         if (rng.random::<f32>()) < self.epsilon
@@ -80,27 +80,27 @@ impl Agent
     }
     
 
-fn learn(&mut self, state_before: &GameState, action: &Action, reward: f32, state_after: &GameState)
-    {
-        
-        let key_before = self.discretize(&state_before);
-        let key_after = self.discretize(&state_after);
-        let q_values_after = self.q_table.get(&key_after).copied().unwrap_or([0.0, 0.0, 0.0]);
-        let q_values_before = self.q_table.entry(key_before).or_insert([0.0, 0.0, 0.0]);
+    pub fn learn(&mut self, state_before: &GameState, action: &Action, reward: f32, state_after: &GameState)
+        {
+            
+            let key_before = self.discretize(&state_before);
+            let key_after = self.discretize(&state_after);
+            let q_values_after = self.q_table.get(&key_after).copied().unwrap_or([0.0, 0.0, 0.0]);
+            let q_values_before = self.q_table.entry(key_before).or_insert([0.0, 0.0, 0.0]);
 
-        let action_index = match action {
-            Action::Left => 0,
-            Action::Right => 1,
-            Action::Stay => 2,
-        };
+            let action_index = match action {
+                Action::Left => 0,
+                Action::Right => 1,
+                Action::Stay => 2,
+            };
 
-        let current_q = q_values_before[action_index];
-        let max_future_q = q_values_after.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
-        let new_q = current_q + self.alpha * (reward + self.gamma * max_future_q - current_q);
-        q_values_before[action_index] = new_q;
-        
+            let current_q = q_values_before[action_index];
+            let max_future_q = q_values_after.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
+            let new_q = current_q + self.alpha * (reward + self.gamma * max_future_q - current_q);
+            q_values_before[action_index] = new_q;
+            
 
-    }
+        }
 
 }
 
