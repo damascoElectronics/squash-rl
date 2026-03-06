@@ -51,6 +51,8 @@ fn main() {
             let mut window = game::render::WindowState::new();
             let mut reward:i32 = 0; 
             let mut action: game::Action = game::Action::Stay;
+            let mut episode: u32 = 0;
+
             current_state.active = true;
 
             while window.window.is_open()
@@ -83,7 +85,10 @@ fn main() {
                 {
                     current_state = game::GameState::new();
                     current_state.active = true;
+                    episode += 1;
+                    agent.epsilon = (agent.epsilon * 0.995).max(0.05);
                     reward = -1;
+
                 }
                 else if (previous_state.ball_speed.speed_y > 0) && (current_state.ball_speed.speed_y < 0)
                 {
@@ -95,8 +100,14 @@ fn main() {
                 }
                 agent.learn(&previous_state, &action, reward as f32, &current_state);
                 previous_state = current_state.clone();
-                window.draw(&current_state);            
+                if episode % 100 == 0 {
+                    // limpiar pantalla
+                    print!("\x1B[2J\x1B[1;1H");
+                    println!("Episode: {}, Epsilon: {:.3}, Score: {}", episode, agent.epsilon, current_state.score);
+                    window.draw(&current_state);
+                }               
             } 
+            agent.save(); 
         }
         _ => 
         { 
@@ -105,5 +116,3 @@ fn main() {
     }
 
 }
-
-

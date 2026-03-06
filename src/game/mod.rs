@@ -7,7 +7,7 @@ pub mod render;
 
 pub const FIELD_WIDTH: u32 = 800; 	// area of the game
 pub const FIELD_HEIGHT: u32 = 600;	// area of the game
-const RACKET_LENGTH: u32 = 20;	// dimetnions of the racket
+const RACKET_LENGTH: u32 = 100;	// dimetnions of the racket
 const RACKET_HEIGHT: u32 = 4;	// dimentions of the racket
 const SPACE: u32 = 5;		// sapce between racket and botton of the game area
 
@@ -77,8 +77,8 @@ impl GameState
 			// initial state of the ball's speed
 			ball_speed: Speed
 			{
-				speed_x: 1,
-				speed_y: 1,
+				speed_x: 5,
+				speed_y: 5,
 				angle: 0.785398,
 			},
 			// initial state of the racket 
@@ -87,7 +87,7 @@ impl GameState
 				length: RACKET_LENGTH,
 				height: RACKET_HEIGHT,
 				curve: 0,
-				racket_speed:1,
+				racket_speed:5,
 				racket_position: Position
 				{
 					x: FIELD_WIDTH/2,
