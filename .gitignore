@@ -3,6 +3,7 @@
 **/target/
 *.lock
 *.out
+*.bin
 
 # Cargo lock files for libraries (keep for binaries)
 # Cargo.lock is committed for binary projects
