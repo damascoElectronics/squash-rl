@@ -10,7 +10,7 @@ pub const FIELD_WIDTH: u32 = 800;
 /// Game area height in pixels.
 pub const FIELD_HEIGHT: u32 = 600;
 /// Width of the player racket.
-const RACKET_LENGTH: u32 = 100;
+const RACKET_LENGTH: u32 = 20;
 /// Height/thickness of the player racket.
 const RACKET_HEIGHT: u32 = 4;
 /// Space between the racket and the bottom of the game area.

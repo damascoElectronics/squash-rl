@@ -14,10 +14,10 @@ const ZONE_RELATION_W: i32 = (FIELD_WIDTH / NUM_ZONES) as i32 ;
 
 /// The Q-learning Agent.
 #[derive(Serialize, Deserialize)]
-pub struct Agent 
+pub struct Agent
 {
-    /// Q-table mapping states `(zone_x_ball, zone_y_ball, dir_x, dir_y, zone_x_racket)` to Q-values for each action.
-    q_table: HashMap<(i32,i32,i32,i32,i32), [f32; 3]>,  
+    /// Q-table mapping states `(zone_relative, zone_y_ball, dir_x, dir_y)` to Q-values for each action.
+    q_table: HashMap<(i32,i32,i32,i32), [f32; 3]>,
     /// Learning rate (alpha).
     alpha: f32,                                      
     /// Discount factor (gamma).
@@ -42,7 +42,7 @@ impl Agent
             q_table: HashMap::new(),
             alpha: 0.3,
             gamma: 0.99,
-            epsilon: 0.99,
+            epsilon: 0.999,
         };
         agent.load();
         agent
@@ -58,25 +58,21 @@ impl Agent
     ///
     /// Returns:
     ///     A tuple `(zone_x_ball, zone_y_ball, dir_x, dir_y, zone_x_racket)` representing the discrete state.
-    fn discretize (&self, state: &GameState) -> (i32,i32,i32,i32,i32)
+    fn discretize(&self, state: &GameState) -> (i32,i32,i32,i32)
     {
-        // Calculate the discrete horizontal zone of the ball
-        let zone_x_ball:i32 = state.ball_pos.x as i32 / ZONE_RELATION_W;
-        
-        // Calculate the discrete vertical zone of the ball
-        let zone_y_ball:i32 = state.ball_pos.y as i32 / ZONE_RELATION_H;
-        
-        // Get the direction sign for Y coordinate (1, -1, or 0)
-        let dir_y:i32 = state.ball_speed.speed_y.signum(); 
-        
-        // Get the direction sign for X coordinate (1, -1, or 0)
-        let dir_x:i32 = state.ball_speed.speed_x.signum();  
-        
-        // Calculate the discrete horizontal zone of the racket
-        let zone_x_racket:i32 = state.racket.racket_position.x as i32 / ZONE_RELATION_W;
-        
-        // Return the tuple representing the full discrete state
-        (zone_x_ball, zone_y_ball, dir_x, dir_y, zone_x_racket)
+        // Relative horizontal offset: how far left/right the ball is from the racket
+        // This reduces state space from ~5.7M to ~29k and focuses on what actually matters
+        let relative_x = state.ball_pos.x as i32 - state.racket.racket_position.x as i32;
+        let zone_relative: i32 = relative_x / ZONE_RELATION_W;
+
+        // Vertical zone of the ball (how close to the racket)
+        let zone_y_ball: i32 = state.ball_pos.y as i32 / ZONE_RELATION_H;
+
+        // Direction signs
+        let dir_x: i32 = state.ball_speed.speed_x.signum();
+        let dir_y: i32 = state.ball_speed.speed_y.signum();
+
+        (zone_relative, zone_y_ball, dir_x, dir_y)
     }
 
     /// Chooses the next action for the agent to take.
@@ -183,8 +179,9 @@ impl Agent
     /// Serializes the `q_table` using `bincode` and writes it to `qtable.bin`.
     pub fn save(&self) 
     {
-        let bytes = bincode::serialize(&self.q_table).unwrap();
-        fs::write("qtable.bin", bytes).unwrap();
+        let data = (&self.q_table, self.epsilon);
+        let bytes = bincode::serialize(&data).expect("serialization failed");
+        fs::write("qtable.bin", bytes).expect("write failed");
     }
 
     /// Loads the Q-table from a binary file if it exists.
@@ -193,9 +190,15 @@ impl Agent
     /// Q-table entirely if successful.
     pub fn load(&mut self) 
     {
-        if let Ok(bytes) = fs::read("qtable.bin") 
+        if let Ok(bytes) = fs::read("qtable.bin")
         {
-            self.q_table = bincode::deserialize(&bytes).unwrap();
+            if let Ok((q_table, epsilon)) = bincode::deserialize::<(HashMap<(i32,i32,i32,i32), [f32; 3]>, f32)>(&bytes) {
+                self.q_table = q_table;
+                self.epsilon = epsilon;
+                println!("Loaded q_table with {} entries, epsilon: {:.3}", self.q_table.len(), self.epsilon);
+            } else {
+                println!("q_table format changed, starting fresh.");
+            }
         }
     }
 }
